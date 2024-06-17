@@ -16,7 +16,6 @@ build
 # production
 /build
 /dist
-
 dist
 dist-ssr
 .turbo
