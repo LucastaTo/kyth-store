@@ -1,0 +1,84 @@
+<div class="page-content">
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <div class="col-xl-12 mt-1 h-100">
+                <div class="card h-100 border-0 p-4 bg-transparent shadow-none">
+                    <div class="bg-image w-100 rounded-top">
+                        <div class="container bg-image-text text-center">
+                            <h1 class="bg-text title">K.Y.T.H Studio</h1>
+                        </div>
+                    </div>
+                    <% function getIcon(platform) { 
+                        switch(platform) {
+                            case "instagram": %> 
+                                <i class="bx bxl-instagram d-block display-6 mt-2 text-danger"></i>
+                                <% return;
+                            case "facebook": %> 
+                                <i class="bx bxl-facebook-square d-block display-6 mt-2"></i>
+                                <% return;
+                            case "tiktok": %> 
+                                <i class="cuz-tiktok d-block display-6 mt-2"></i>
+                                <% return;
+                            case "zalo": %> 
+                                <i class="cuz-zalo d-block display-6 mt-2"></i>
+                                <% return;
+                            default: %> 
+                                <i class="bx bx-bell-plus d-block display-6 mt-2"></i>
+                                <% return;
+                        }} %> 
+                    <div class="col mt-4 btn-item-menu gap-3">
+                        <div id="accordion">
+                            <% data.forEach(function(item, index) { %>
+                                <div class="card">
+                                    <% if (item.links.length > 1) { %>
+                                        <button class="btn btn-link collapsed group" data-toggle="collapse" data-target="#<%= item.platform %>" aria-expanded="false" aria-controls="<%= item.platform %>">
+                                            <%= getIcon(item.platform) %> 
+                                        </button>
+                                        <div id="<%= item.platform %>" class="collapse" aria-labelledby="heading<%= index + 1 %>" data-parent="#accordion">
+                                            <ul>
+                                                <% item.links.forEach(function(link) { %>
+                                                    <a href="<% link %>" target="_blank" rel="noopener noreferrer"><li><%= link.split("/").pop() %></li></a>
+                                                <% }); %>
+                                            </ul>
+                                        </div>
+                                    <% } else { %>
+                                            <a href="<%= item.links[0] %>" target="_blank" rel="noopener noreferrer" class="btn btn-link collapsed single pb-3">
+                                                <%= getIcon(item.platform) %>  
+                                                <%= item.platform === "facebook" ? "Venus.clothes" : item.links[0].split("/").pop() %>
+                                            </a>
+                                   <% } %>
+                                </div>
+                             <% }); %>
+                        </div>
+                        <!-- <div class="row-lg-2 mini-menu">
+                            <a href="/call-records-list">
+                                <div class="p-1 text-center rounded-1 h-100 custom-css">
+                                    <i class="bx bxl-instagram d-block display-6 mt-2 mb-3 text-success"></i>
+                                    <h6 class="css-btn">通話記録一覧</h6>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="row-lg-2 mini-menu">
+                            <a href="/search-list">
+                                <div class="p-1 text-center rounded-1 h-100 custom-css">
+                                    <i class="bx bxl-facebook-square d-block display-6 mt-2 mb-3 text-danger"></i>
+                                    <h6 class="css-btn">NGワード検索</h6>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="row-lg-2 mini-menu">
+                            <a href="/word-list">
+                                <div class="p-1 text-center rounded-1 h-100 custom-css">
+                                    <i class="cuz-tiktok d-block display-6 mt-2 mb-3 text-warning"></i>
+                                    <h6 class="css-btn">NGワードリスト</h6>
+                                </div>
+                            </a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+<div class="authentication-bg min-vh-100">
+  <div class="bg-overlay bg-light"></div>
+  <div class="container">
+    <div class="pb-2 m-auto d-flex justify-content-center">
+
+    </div>
+    <div class="content">
+      <div class="content-form">
+        <div class="card">
+          <div class="card-header">Kyth</div>
+          <% if(locals?.message) { %>
+          <div class="alert-message alert">
+            <div role="alert"><%= locals?.message %></div>
+          </div>
+          <% } %>
+          <div class="card-body">
+            <form action="/author/login" method="POST">
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <div class="position-relative input-custom-icon">
+                  <input
+                    value="<%= locals?.data?.username || '' %>"
+                    type="text"
+                    class="form-control <%- locals?.errorValidator?.userName && 'form-error' %>"
+                    id="username"
+                    name="username"
+                    placeholder="Input Username"
+                  />
+                  <span class="bx bx-user"></span>
+                </div>
+                <% if(locals?.errorValidator?.userName) { %>
+                <div class="invalid-feedback d-block">
+                  <%= locals?.errorValidator?.userName %>
+                </div>
+                <%}%>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <div
+                  class="position-relative auth-pass-inputgroup input-custom-icon"
+                >
+                  <span class="bx bx-lock-alt"></span>
+                  <input
+                    value="<%= locals?.data?.password || '' %>"
+                    type="password"
+                    class="form-control <%- locals?.errorValidator?.password && 'form-error' %>"
+                    id="password"
+                    name="password"
+                    placeholder="Input password"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-link position-absolute h-100 end-0 top-0"
+                    id="password-addon"
+                  >
+                    <i class="mdi mdi-eye-outline font-size-18 text-muted"></i>
+                  </button>
+                </div>
+                <% if(locals?.errorValidator?.password) { %>
+                <div class="invalid-feedback d-block">
+                  <%= locals?.errorValidator?.password %>
+                </div>
+                <%}%>
+              </div>
+
+              <div class="form-check py-1">
+                <% let checked = locals?.data?.remember ? "checked" : "" %>
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="remember"
+                  name="remember"
+                  <%="checked"
+                  %>
+                />
+                <label class="form-check-label" for="remember">Remember</label>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

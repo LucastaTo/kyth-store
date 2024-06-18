@@ -1,0 +1,89 @@
+@media (min-width: 812px) {
+    .card {
+        display: flex;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1024px) {
+    .page-content {
+        height: 90vh;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1228px) {
+    .page-content {
+        height: 89vh;
+    }
+}
+
+@media (min-width: 1228px) and (max-width: 1396px) {
+    .page-content {
+        height: 82vh;
+    }
+}
+
+@media (min-width: 1396px) and (max-width: 1536px) {
+    .page-content {
+        height: 85vh;
+    }
+}
+
+@media (min-width: 1536px) and (max-width: 1706px) {
+    .page-content {
+        height: 86vh;
+    }
+}
+
+@media (min-width: 1706px) and (max-width: 1920px) {
+    .page-content {
+        height: 87vh;
+    }
+}
+
+@media (min-width: 1920px) and (max-width: 2048px) {
+    .page-content {
+        height: 88vh;
+    }
+}
+
+@media (min-width: 2048px) and (max-width: 2304px) {
+    .page-content {
+        height: 89vh;
+    }
+}
+
+@media (min-width: 2304px) {
+    .page-content {
+        height: 90vh;
+    }
+}
+
+#accordion {
+    width: 400px;
+    margin: auto;
+}
+
+.btn.btn-link.collapsed {
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.collapse.show ul {
+    border-top: 1px solid #eff0f2;
+    padding-left: 3rem;
+}
+
+.container-overview {
+    background: linear-gradient(90deg, rgba(194,194,194,1) 0%, rgba(214,214,214,1) 15%, rgba(255,255,255,1) 28%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 73%, rgba(214,214,214,1) 85%, rgba(194,194,194,0.8351934523809523) 100%);
+}
+
+.collapse.show ul li:nth-child(1) {
+    margin-top: 1rem;
+}
+
+.bg-image-text .title {
+    font-family: "boxicons";
+    font-size: 2.9rem;
+}
