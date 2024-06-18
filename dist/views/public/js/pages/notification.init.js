@@ -1,0 +1,1 @@
+let errorMessage=document.getElementById("errorMessage");errorMessage&&alertify.error(errorMessage.dataset.test);let successMessage=document.getElementById("successMessage");successMessage&&alertify.success(successMessage.dataset.test);
