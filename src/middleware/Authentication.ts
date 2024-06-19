@@ -99,9 +99,10 @@ export const checkAppName = (
   const { APP_NAME } = process.env;
 
   if (!APP_NAME) {
+    Logging.error("Environment variable APP_NAME is not set")
     res
-      .status(500)
-      .json({ message: "Environment variable APP_NAME is not set" });
+      .status(HttpCode.INTERNAL_SERVER_ERROR)
+      .redirect("/pages-500");
     return;
   }
 
