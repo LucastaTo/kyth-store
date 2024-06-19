@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { HttpCode } from "../uilts/http-code";
 import { EncryptHelper } from "../uilts/helper";
 import { Variables } from "../uilts/variables";
 import Author, { IAuthor } from "../models/Author";
+import Logging from "../library/Logging";
 
 /**
  * Check the authentication token when the user visits all pages while logged in
@@ -19,15 +20,16 @@ export async function verifyAuthTokenRouter(
 
   if (!token || (!request.cookies.wacts && request.path != "/author/login")) {
     // destroySession(request, response);
-    return response
+  return response
       .clearCookie("wacts", { maxAge: 0 })
       .status(HttpCode.UNAUTHORIZATION)
       .redirect("/author/login");
   }
+  
   try {
     let jwtPayload = jwt.verify(
       EncryptHelper.decryptToken(token),
-      process.env.TOKEN_KEY!
+      process.env.SERCRET_KEY!
     ) as {
       username: string;
       lang: string;
@@ -35,6 +37,15 @@ export async function verifyAuthTokenRouter(
     };
 
     let refreshUserDecoded: IAuthor | null = await Author.findOne({ username });
+ 
+    if(!refreshUserDecoded) {
+      refreshUserDecoded = {
+        isActive: true,
+        username: Variables.USERNAME,
+        password: Variables.PASSWORD,
+        lang: "VN"
+      }
+    }
 
     if (
       !refreshUserDecoded?.isActive ||
@@ -63,10 +74,10 @@ export async function verifyAuthTokenRouter(
     response.locals.jwtPayload = {
       ...jwtPayload,
       user: refreshUserDecoded,
-      defaultLanguage: process.env.DEFAULT_LANGUAGE || "ja",
     };
     return next();
   } catch (err: any) {
+    Logging.error(err)
     return response.status(HttpCode.UNAUTHORIZATION).redirect("/author/login");
   }
 }

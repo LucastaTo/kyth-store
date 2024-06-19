@@ -15,17 +15,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const Author_1 = __importDefault(require("../models/Author"));
+const SocialMedia_1 = __importDefault(require("../models/SocialMedia"));
 const Logging_1 = __importDefault(require("../library/Logging"));
 const message_1 = require("../uilts/message");
 const variables_1 = require("../uilts/variables");
 const http_code_1 = require("../uilts/http-code");
 const helper_1 = require("../uilts/helper");
-const renderAdminPage = (req, res) => {
-    res.render("dashboard/index", { message: "" });
-};
+const renderAdminPage = (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let socialMedias = yield SocialMedia_1.default.find();
+    if (socialMedias.length === 0) {
+        socialMedias = variables_1.Variables.DATA_DEFAULT;
+    }
+    const data = helper_1.DataTransformerHelper.transformData(socialMedias);
+    res.render("dashboard/index", { data });
+});
 const renderLoginPage = (req, res) => {
     if (req.session.userName) {
-        return res.redirect("/dashboard");
+        return res.redirect("/author/dashboard");
     }
     req.session.userName = "";
     return res.render("authentication/login");
@@ -66,7 +72,10 @@ const loginAuthor = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     if (Object.keys(errors).length > 0) {
         return res
             .status(http_code_1.HttpCode.NOT_FOUND)
-            .render("authentication/login", { errorValidator: errors, data: req.body });
+            .render("authentication/login", {
+            errorValidator: errors,
+            data: req.body,
+        });
     }
     if (remember === "on") {
         expiredSession = variables_1.Variables.REMEMBER_SESSION;
@@ -74,12 +83,12 @@ const loginAuthor = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     try {
         let user = yield Author_1.default.findOne({ username });
-        if (Object.keys(user).length === 0) {
+        if (!user) {
             user = {
                 isActive: true,
                 username: variables_1.Variables.USERNAME,
                 password: variables_1.Variables.PASSWORD,
-                lang: "VN"
+                lang: "VN",
             };
         }
         if (user && (yield bcryptjs_1.default.compare(password, user.password))) {
@@ -87,9 +96,12 @@ const loginAuthor = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 Logging_1.default.error(message_1.Messages.LOGIN_FAIL);
                 res
                     .status(http_code_1.HttpCode.BAD_REQUEST)
-                    .render("authentication/login", { message: message_1.Messages.USER_IS_BLOCKED, data: req.body });
+                    .render("authentication/login", {
+                    message: message_1.Messages.USER_IS_BLOCKED,
+                    data: req.body,
+                });
             }
-            const accessToken = jsonwebtoken_1.default.sign({ username: user.username, lang: user.lang }, process.env.JWT_SECRET || "default_secret", { expiresIn: "1h" });
+            const accessToken = jsonwebtoken_1.default.sign({ username: user.username, lang: user.lang, remember: remember }, process.env.SERCRET_KEY, { expiresIn: `${process.env.REMEMBER_TOKEN}s` });
             Logging_1.default.info(message_1.Messages.LOGIN_SUCCESS);
             req.session.userName = user.username;
             res
@@ -100,12 +112,19 @@ const loginAuthor = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         else {
             Logging_1.default.error(message_1.Messages.LOGIN_FAIL);
-            res.status(http_code_1.HttpCode.BAD_REQUEST).render("authentication/login", { message: message_1.Messages.INVALID_CREDENTIAL, data: req.body });
+            res
+                .status(http_code_1.HttpCode.BAD_REQUEST)
+                .render("authentication/login", {
+                message: message_1.Messages.INVALID_CREDENTIAL,
+                data: req.body,
+            });
         }
     }
     catch (error) {
         Logging_1.default.error(error);
-        res.status(http_code_1.HttpCode.BAD_REQUEST).render("authentication/login", { message: message_1.Messages.INVALID_CREDENTIAL });
+        res
+            .status(http_code_1.HttpCode.BAD_REQUEST)
+            .render("authentication/login", { message: message_1.Messages.INVALID_CREDENTIAL });
     }
 });
 const logoutAuthor = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -35,41 +35,20 @@ export class Messages {
   public static readonly REFRESH_TOKEN_SUCCESS: string =
     "Refresh token success!";
   public static readonly CAN_NOT_VERIFY_TOKEN: string = "Cannot verify token!";
-  public static readonly LOGOUT_SUCCESS: string = "logged out Successfully!";
+  public static readonly LOGOUT_SUCCESS: string = "Đăng xuất thành công!";
 
   // Login
   public static readonly INVALID_USER_NAME: string =
-    "ユーザー名を入力してください！";
+    "Xin hãy điền tên đăng nhập!";
   public static readonly INVALID_PASSWORD: string =
-    "パスワードを入力してください！";
+    "Vui lòng nhập mật khẩu của bạn!";
   public static readonly INVALID_CREDENTIAL: string =
-    "ログインIDもしくはパスワードが無効です";
+    "ID đăng nhập hoặc mật khẩu không hợp lệ";
   public static readonly USER_IS_BLOCKED: string =
-    "現在のユーザーはブロックされています";
-
-  // SIGNUP
-  public static readonly PASSWORD_IS_LENGTH: string = "パスワードは 8 文字以上";
-  public static readonly INVALID_EMAIL: string =
-    "電子メールは必須フィールドです!";
-  public static readonly INVALID_FIRST_NAME: string = "名は必須フィールドです!";
-  public static readonly INVALID_LAST_NAME: string = "姓は必須フィールドです!";
-  public static readonly WRONG_EMAIL_FORMAT: string =
-    "電子メールは有効な電子メールである必要があります!";
-  public static readonly PASSWORD_NOT_MATCH: string =
-    "パスワードが一致する必要があります!";
-  public static readonly EMAIL_IS_EXIST: string = "メールは既に存在します!";
-  public static readonly USER_NAME_IS_EXIST: string =
-    "ユーザー名は既に存在します!";
-  public static readonly MAX_ALLOW_AVATAR_SIZE: string =
-    "アップロードした画像が 2MB を超えています";
-  public static readonly INVALID_FILE: string = "無効なファイル";
-
-  // NG Reg
-  public static readonly INVALID_NG_REG: string = "この項目は必須です!";
-  public static readonly NG_REG_IS_EXISTS: string = "NGワードは登録済みです!";
+    "Người dùng hiện tại đã bị chặn";
 
   // SUCCESSFULLY
-  public static readonly CREATED_SUCCESS: string = "が正常に作成されました。";
-  public static readonly DELETED_SUCCESS: string = "が正常に削除されました。";
-  public static readonly UPDATED_SUCCESS: string = "が正常に更新されました。";
+  public static readonly CREATED_SUCCESS: string = "Đã được tạo thành công。";
+  public static readonly DELETED_SUCCESS: string = "Đã được xoá thành công。";
+  public static readonly UPDATED_SUCCESS: string = "Đã được cập nhật thành công。";
 }

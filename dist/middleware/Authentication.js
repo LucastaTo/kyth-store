@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,11 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkAppName = exports.verifyAuthTokenRouter = void 0;
-const jwt = __importStar(require("jsonwebtoken"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const http_code_1 = require("../uilts/http-code");
 const helper_1 = require("../uilts/helper");
 const variables_1 = require("../uilts/variables");
 const Author_1 = __importDefault(require("../models/Author"));
+const Logging_1 = __importDefault(require("../library/Logging"));
 /**
  * Check the authentication token when the user visits all pages while logged in
  * Get access_token from cookies
@@ -57,8 +35,16 @@ function verifyAuthTokenRouter(request, response, next) {
                 .redirect("/author/login");
         }
         try {
-            let jwtPayload = jwt.verify(helper_1.EncryptHelper.decryptToken(token), process.env.TOKEN_KEY);
+            let jwtPayload = jsonwebtoken_1.default.verify(helper_1.EncryptHelper.decryptToken(token), process.env.SERCRET_KEY);
             let refreshUserDecoded = yield Author_1.default.findOne({ username });
+            if (!refreshUserDecoded) {
+                refreshUserDecoded = {
+                    isActive: true,
+                    username: variables_1.Variables.USERNAME,
+                    password: variables_1.Variables.PASSWORD,
+                    lang: "VN"
+                };
+            }
             if (!(refreshUserDecoded === null || refreshUserDecoded === void 0 ? void 0 : refreshUserDecoded.isActive) ||
                 (username && username !== jwtPayload.username) ||
                 username === undefined) {
@@ -78,10 +64,11 @@ function verifyAuthTokenRouter(request, response, next) {
             else {
                 response.cookie("wacts", token, { maxAge: variables_1.Variables.EXPIRED_SESSION });
             }
-            response.locals.jwtPayload = Object.assign(Object.assign({}, jwtPayload), { user: refreshUserDecoded, defaultLanguage: process.env.DEFAULT_LANGUAGE || "ja" });
+            response.locals.jwtPayload = Object.assign(Object.assign({}, jwtPayload), { user: refreshUserDecoded });
             return next();
         }
         catch (err) {
+            Logging_1.default.error(err);
             return response.status(http_code_1.HttpCode.UNAUTHORIZATION).redirect("/author/login");
         }
     });

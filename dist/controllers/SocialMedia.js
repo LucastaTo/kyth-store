@@ -13,14 +13,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const SocialMedia_1 = __importDefault(require("../models/SocialMedia"));
-const renderOverviewPage = (req, res) => {
-    const data = [
-        { platform: "instagram", links: ["https://www.instagram.com/kyth.studio.vn"] },
-        { platform: "tiktok", links: ["https://www.tiktok.com/@kyth12.6"] },
-        { platform: "facebook", links: ["https://www.facebook.com/profile.php?id=100086505662624&mibextid=LQQJ4d"] }
-    ];
-    res.render("overview/index", { data });
-};
+const Logging_1 = __importDefault(require("../library/Logging"));
+const http_code_1 = require("../uilts/http-code");
+const helper_1 = require("../uilts/helper");
+const variables_1 = require("../uilts/variables");
+const renderOverviewPage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { APP_NAME } = process.env;
+    try {
+        let socialMedias = yield SocialMedia_1.default.find({
+            platform: APP_NAME,
+        });
+        if ((socialMedias === null || socialMedias === void 0 ? void 0 : socialMedias.length) === 0) {
+            socialMedias = variables_1.Variables.DATA_DEFAULT;
+        }
+        const data = helper_1.DataTransformerHelper.transformDataByPlatform(socialMedias);
+        res.render("overview/index", { data });
+    }
+    catch (error) {
+        Logging_1.default.error(error);
+        res.status(http_code_1.HttpCode.BAD_REQUEST).render("pages-500/index");
+    }
+});
 const getAllSocialMedia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const socialMedias = yield SocialMedia_1.default.find();
@@ -50,12 +63,6 @@ const createSocialMedia = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 const getSocialMediaByAppName = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { APP_NAME } = process.env;
-    if (!APP_NAME) {
-        res
-            .status(500)
-            .json({ message: "Environment variable APP_NAME is not set" });
-        return;
-    }
     try {
         const socialMedia = yield SocialMedia_1.default.findOne({
             platform: APP_NAME,

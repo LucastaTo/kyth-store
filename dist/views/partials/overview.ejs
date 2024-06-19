@@ -33,49 +33,24 @@
                                     <% if (item.links.length > 1) { %>
                                         <button class="btn btn-link collapsed group" data-toggle="collapse" data-target="#<%= item.platform %>" aria-expanded="false" aria-controls="<%= item.platform %>">
                                             <%= getIcon(item.platform) %> 
+                                            <i class="bx bx-chevron-down display-6 mt-2 icon"></i> 
                                         </button>
                                         <div id="<%= item.platform %>" class="collapse" aria-labelledby="heading<%= index + 1 %>" data-parent="#accordion">
                                             <ul>
-                                                <% item.links.forEach(function(link) { %>
-                                                    <a href="<% link %>" target="_blank" rel="noopener noreferrer"><li><%= link.split("/").pop() %></li></a>
+                                                <% item.links.forEach(function(item) { %>
+                                                    <a href="<%= typeof(item) != 'string' ? item.link : item %>" target="_blank" rel="noopener noreferrer"><li><%= typeof(item) != 'string' ? item.convertName : item.split("/").pop() %></li></a>
                                                 <% }); %>
                                             </ul>
                                         </div>
                                     <% } else { %>
-                                            <a href="<%= item.links[0] %>" target="_blank" rel="noopener noreferrer" class="btn btn-link collapsed single pb-3">
+                                            <a href="<%= typeof(item.links[0]) != 'string' ? item.links[0].link : item.links[0] %>" target="_blank" rel="noopener noreferrer" class="btn btn-link collapsed single pb-3">
                                                 <%= getIcon(item.platform) %>  
-                                                <%= item.platform === "facebook" ? "Venus.clothes" : item.links[0].split("/").pop() %>
+                                                <%= typeof(item.links[0]) != 'string' ? item.links[0].convertName : item.links[0].split("/").pop() %>
                                             </a>
                                    <% } %>
                                 </div>
                              <% }); %>
                         </div>
-                        <!-- <div class="row-lg-2 mini-menu">
-                            <a href="/call-records-list">
-                                <div class="p-1 text-center rounded-1 h-100 custom-css">
-                                    <i class="bx bxl-instagram d-block display-6 mt-2 mb-3 text-success"></i>
-                                    <h6 class="css-btn">通話記録一覧</h6>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="row-lg-2 mini-menu">
-                            <a href="/search-list">
-                                <div class="p-1 text-center rounded-1 h-100 custom-css">
-                                    <i class="bx bxl-facebook-square d-block display-6 mt-2 mb-3 text-danger"></i>
-                                    <h6 class="css-btn">NGワード検索</h6>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="row-lg-2 mini-menu">
-                            <a href="/word-list">
-                                <div class="p-1 text-center rounded-1 h-100 custom-css">
-                                    <i class="cuz-tiktok d-block display-6 mt-2 mb-3 text-warning"></i>
-                                    <h6 class="css-btn">NGワードリスト</h6>
-                                </div>
-                            </a>
-                        </div> -->
                     </div>
                 </div>
             </div>

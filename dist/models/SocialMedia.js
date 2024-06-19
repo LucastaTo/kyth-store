@@ -27,7 +27,8 @@ const mongoose_1 = __importStar(require("mongoose"));
 const SocialMediaSchema = new mongoose_1.Schema({
     appName: { type: String, required: true },
     platform: { type: String, required: true },
-    link: { type: String, required: true, unique: true },
+    link: { type: String, required: true },
+    convertName: { type: String },
 });
 exports.default = mongoose_1.default.model("SocialMedia", SocialMediaSchema);
 //# sourceMappingURL=SocialMedia.js.map

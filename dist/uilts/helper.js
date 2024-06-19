@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EncryptHelper = void 0;
+exports.DataTransformerHelper = exports.EncryptHelper = void 0;
 const variables_1 = require("./variables");
 const bcrypt = __importStar(require("bcryptjs"));
 /**
@@ -56,4 +56,83 @@ EncryptHelper.decryptToken = (token) => {
 EncryptHelper.bcryptHash = (password) => {
     return bcrypt.hash(password, variables_1.Variables.SALT_ROUNDS);
 };
+class DataTransformerHelper {
+    static transformData(data) {
+        // Step 1: Group data by appName using a Map
+        const groupedByAppName = DataTransformerHelper.groupByAppName(data);
+        // Step 2: Transform grouped data into the desired format
+        return Array.from(groupedByAppName, ([appName, items]) => {
+            // Group by platform and aggregate links using Map
+            const groupedByPlatform = DataTransformerHelper.groupByPlatform(items);
+            // Convert Map to array format
+            const informations = Array.from(groupedByPlatform, ([platform, linksSet]) => {
+                // Map each link to include convertName if present
+                const links = Array.from(linksSet, (link) => {
+                    if (typeof link === "string") {
+                        return link; // If it's a plain string, return as is
+                    }
+                    else {
+                        return { link: link.link, convertName: link.convertName || "" };
+                    }
+                });
+                return {
+                    platform,
+                    links,
+                };
+            });
+            return {
+                appName,
+                informations,
+            };
+        });
+    }
+    static transformDataByPlatform(data) {
+        // Step 1: Group data by platform using a Map directly
+        const groupedByPlatform = DataTransformerHelper.groupByPlatform(data);
+        // Step 2: Convert Map to array format
+        return Array.from(groupedByPlatform, ([platform, linksSet]) => {
+            // Extract links from Set, map to desired structure
+            const links = Array.from(linksSet, (link) => {
+                if (typeof link === "string") {
+                    return link; // If it's a plain string, return as is
+                }
+                else {
+                    return { link: link.link, convertName: link.convertName || "" }; // If it's an object, include convertName
+                }
+            });
+            return {
+                platform,
+                links,
+            };
+        });
+    }
+    static groupByPlatform(data) {
+        var _a;
+        const groupedMap = new Map();
+        for (const item of data) {
+            const { platform, link, convertName } = item;
+            const entry = convertName
+                ? { link, convertName }
+                : link;
+            if (groupedMap.has(platform)) {
+                (_a = groupedMap.get(platform)) === null || _a === void 0 ? void 0 : _a.add(entry);
+            }
+            else {
+                groupedMap.set(platform, new Set([entry]));
+            }
+        }
+        return groupedMap;
+    }
+    static groupByAppName(data) {
+        return data.reduce((acc, item) => {
+            const key = item.appName;
+            if (!acc.has(key)) {
+                acc.set(key, []);
+            }
+            acc.get(key).push(item);
+            return acc;
+        }, new Map());
+    }
+}
+exports.DataTransformerHelper = DataTransformerHelper;
 //# sourceMappingURL=helper.js.map

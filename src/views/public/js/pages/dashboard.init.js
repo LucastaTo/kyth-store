@@ -1,3 +1,24 @@
+// Get all tabs and tab navigation links
+const tabItems = document.querySelectorAll('.nav-link');
+const tabContentItems = document.querySelectorAll('.tab-pane');
+
+// Add click event listener to each tab navigation link
+tabItems.forEach(item => {
+  item.addEventListener('click', function() {
+    // Remove active class from all navigation links
+    tabItems.forEach(link => link.classList.remove('active'));
+    // Add active class to the clicked navigation link
+    this.classList.add('active');
+
+    // Get the target tab content ID from data-bs-target attribute
+    const target = this.getAttribute('data-bs-target');
+    // Remove active class from all tab content items
+    tabContentItems.forEach(tabContent => tabContent.classList.remove('show', 'active'));
+    // Add active class to the corresponding tab content
+    document.querySelector(target).classList.add('show', 'active');
+  });
+});
+
 let sortBy = document.getElementById("sortBy");
 let openModalSpinner = document.getElementById("openModal");
 

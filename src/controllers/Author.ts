@@ -1,20 +1,37 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Author, { IAuthor } from "../models/Author";
+import SocialMedia, { ISocialMedia } from "../models/SocialMedia";
 import Logging from "../library/Logging";
 import { Messages } from "../uilts/message";
 import { Variables } from "../uilts/variables";
 import { HttpCode } from "../uilts/http-code";
-import { EncryptHelper } from "../uilts/helper";
+import { DataTransformerHelper, EncryptHelper } from "../uilts/helper";
 
-const renderAdminPage = (req: Request, res: Response): void => {
-  res.render("dashboard/index", { message: "" });
+interface GroupedByPlatform {
+  platform: string;
+  links: string[];
+}
+
+interface TransformedData {
+  appName: string;
+  informations: GroupedByPlatform[];
+}
+
+const renderAdminPage = async (_: Request, res: Response): Promise<void> => {
+  let socialMedias: ISocialMedia[] = await SocialMedia.find();
+  if (socialMedias.length === 0) {
+    socialMedias = Variables.DATA_DEFAULT as ISocialMedia[];
+  }
+
+  const data = DataTransformerHelper.transformData(socialMedias);
+  res.render("dashboard/index", { data });
 };
 
 const renderLoginPage = (req: Request, res: Response): void => {
   if ((req.session as any).userName) {
-    return res.redirect("/dashboard");
+    return res.redirect("/author/dashboard");
   }
 
   (req.session as any).userName = "";
@@ -60,7 +77,10 @@ const loginAuthor = async (req: Request, res: Response) => {
   if (Object.keys(errors).length > 0) {
     return res
       .status(HttpCode.NOT_FOUND)
-      .render("authentication/login", { errorValidator: errors, data: req.body });
+      .render("authentication/login", {
+        errorValidator: errors,
+        data: req.body,
+      });
   }
 
   if (remember === "on") {
@@ -70,13 +90,13 @@ const loginAuthor = async (req: Request, res: Response) => {
 
   try {
     let user: IAuthor | null = await Author.findOne({ username });
-    if(Object.keys(user).length === 0) {
+    if (!user) {
       user = {
         isActive: true,
         username: Variables.USERNAME,
         password: Variables.PASSWORD,
-        lang: "VN"
-      }
+        lang: "VN",
+      };
     }
 
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -84,12 +104,15 @@ const loginAuthor = async (req: Request, res: Response) => {
         Logging.error(Messages.LOGIN_FAIL);
         res
           .status(HttpCode.BAD_REQUEST)
-          .render("authentication/login", { message: Messages.USER_IS_BLOCKED, data: req.body });
+          .render("authentication/login", {
+            message: Messages.USER_IS_BLOCKED,
+            data: req.body,
+          });
       }
       const accessToken = jwt.sign(
-        { username: user.username, lang: user.lang },
-        process.env.JWT_SECRET || "default_secret",
-        { expiresIn: "1h" }
+        { username: user.username, lang: user.lang, remember: remember },
+        process.env.SERCRET_KEY,
+        { expiresIn: `${process.env.REMEMBER_TOKEN!}s` }
       );
 
       Logging.info(Messages.LOGIN_SUCCESS);
@@ -101,12 +124,18 @@ const loginAuthor = async (req: Request, res: Response) => {
         .redirect("/author/dashboard");
     } else {
       Logging.error(Messages.LOGIN_FAIL);
-      res.status(HttpCode.BAD_REQUEST).render("authentication/login", { message: Messages.INVALID_CREDENTIAL, data: req.body });
+      res
+        .status(HttpCode.BAD_REQUEST)
+        .render("authentication/login", {
+          message: Messages.INVALID_CREDENTIAL,
+          data: req.body,
+        });
     }
   } catch (error) {
     Logging.error(error);
-    res.status(HttpCode.BAD_REQUEST).render("authentication/login", { message: Messages.INVALID_CREDENTIAL });
-        
+    res
+      .status(HttpCode.BAD_REQUEST)
+      .render("authentication/login", { message: Messages.INVALID_CREDENTIAL });
   }
 };
 

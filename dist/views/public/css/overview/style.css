@@ -63,6 +63,12 @@
     margin: auto;
 }
 
+@media screen and (max-width: 576px) {
+    #accordion  {
+        width: 100%;
+    }
+}
+
 .btn.btn-link.collapsed {
     text-align: left;
     display: flex;

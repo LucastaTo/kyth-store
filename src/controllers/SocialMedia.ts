@@ -1,13 +1,30 @@
 import { Request, Response } from "express";
 import SocialMedia, { ISocialMedia } from "../models/SocialMedia";
+import Logging from "../library/Logging";
+import { HttpCode } from "../uilts/http-code";
+import { DataTransformerHelper } from "../uilts/helper";
+import { Variables } from "../uilts/variables";
 
-const renderOverviewPage = (req: Request, res: Response): void => {
-  const data = [
-    { platform: "instagram", links: ["https://www.instagram.com/kyth.studio.vn"] },
-    { platform: "tiktok", links: ["https://www.tiktok.com/@kyth12.6"]},
-    { platform: "facebook", links: ["https://www.facebook.com/profile.php?id=100086505662624&mibextid=LQQJ4d"] }
-  ];
-  res.render("overview/index", { data });
+const renderOverviewPage = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { APP_NAME } = process.env;
+  try {
+    let socialMedias: ISocialMedia[] | null = await SocialMedia.find({
+      platform: APP_NAME,
+    });
+
+    if (socialMedias?.length === 0) {
+      socialMedias = Variables.DATA_DEFAULT as ISocialMedia[];
+    }
+
+    const data = DataTransformerHelper.transformDataByPlatform(socialMedias);
+    res.render("overview/index", { data });
+  } catch (error: any) {
+    Logging.error(error);
+    res.status(HttpCode.BAD_REQUEST).render("pages-500/index");
+  }
 };
 
 const getAllSocialMedia = async (
@@ -50,13 +67,6 @@ const getSocialMediaByAppName = async (
   res: Response
 ): Promise<void> => {
   const { APP_NAME } = process.env;
-
-  if (!APP_NAME) {
-    res
-      .status(500)
-      .json({ message: "Environment variable APP_NAME is not set" });
-    return;
-  }
 
   try {
     const socialMedia: ISocialMedia | null = await SocialMedia.findOne({
