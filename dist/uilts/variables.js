@@ -33,7 +33,7 @@ Variables.DATA_DEFAULT = [
         appName: Variables.APPNAME,
         platform: "facebook",
         link: "https://www.facebook.com/profile.php?id=100086505662624&mibextid=LQQJ4d",
-        convertName: "Venus.clothes",
+        convertName: "KYTH Studio",
     },
 ];
 //# sourceMappingURL=variables.js.map

@@ -85,9 +85,10 @@ exports.verifyAuthTokenRouter = verifyAuthTokenRouter;
 const checkAppName = (req, res, next) => {
     const { APP_NAME } = process.env;
     if (!APP_NAME) {
+        Logging_1.default.error("Environment variable APP_NAME is not set");
         res
-            .status(500)
-            .json({ message: "Environment variable APP_NAME is not set" });
+            .status(http_code_1.HttpCode.INTERNAL_SERVER_ERROR)
+            .redirect("/pages-500");
         return;
     }
     next();
