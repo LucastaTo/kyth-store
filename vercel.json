@@ -10,6 +10,9 @@
     "routes": [
         {
             "src": "/(.*)",
+            "headers": {
+                "Cache-Control": "no-store, no-cache, must-revalidate"
+            },
             "dest": "dist/index.js"
         }
     ]

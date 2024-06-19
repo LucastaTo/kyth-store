@@ -64,7 +64,7 @@ const config = {
     output: {
         path: path.resolve(__dirname, "dist"),
         chunkFilename: "[name].bundle.js",
-        filename: "index.js",
+        filename: isProduction ? "index.js" : "index.js?[fullhash]", // Thêm query parameter vào đây
     },
 };
 
