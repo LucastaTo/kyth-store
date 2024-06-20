@@ -20,7 +20,12 @@ interface TransformedData {
 }
 
 const renderAdminPage = async (_: Request, res: Response): Promise<void> => {
-  let socialMedias: ISocialMedia[] = await SocialMedia.find();
+  let socialMedias: ISocialMedia[] = await SocialMedia.find()
+    .sort({
+      order: 1,
+    })
+    .exec();
+
   if (socialMedias.length === 0) {
     socialMedias = Variables.DATA_DEFAULT as ISocialMedia[];
   }
@@ -75,12 +80,10 @@ const loginAuthor = async (req: Request, res: Response) => {
   if (!password) errors = { ...errors, password: Messages.INVALID_PASSWORD };
 
   if (Object.keys(errors).length > 0) {
-    return res
-      .status(HttpCode.NOT_FOUND)
-      .render("authentication/login", {
-        errorValidator: errors,
-        data: req.body,
-      });
+    return res.status(HttpCode.NOT_FOUND).render("authentication/login", {
+      errorValidator: errors,
+      data: req.body,
+    });
   }
 
   if (remember === "on") {
@@ -102,12 +105,10 @@ const loginAuthor = async (req: Request, res: Response) => {
     if (user && (await bcrypt.compare(password, user.password))) {
       if (!user.isActive) {
         Logging.error(Messages.LOGIN_FAIL);
-        res
-          .status(HttpCode.BAD_REQUEST)
-          .render("authentication/login", {
-            message: Messages.USER_IS_BLOCKED,
-            data: req.body,
-          });
+        res.status(HttpCode.BAD_REQUEST).render("authentication/login", {
+          message: Messages.USER_IS_BLOCKED,
+          data: req.body,
+        });
       }
       const accessToken = jwt.sign(
         { username: user.username, lang: user.lang, remember: remember },
@@ -124,12 +125,10 @@ const loginAuthor = async (req: Request, res: Response) => {
         .redirect("/author/dashboard");
     } else {
       Logging.error(Messages.LOGIN_FAIL);
-      res
-        .status(HttpCode.BAD_REQUEST)
-        .render("authentication/login", {
-          message: Messages.INVALID_CREDENTIAL,
-          data: req.body,
-        });
+      res.status(HttpCode.BAD_REQUEST).render("authentication/login", {
+        message: Messages.INVALID_CREDENTIAL,
+        data: req.body,
+      });
     }
   } catch (error) {
     Logging.error(error);

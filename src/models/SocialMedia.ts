@@ -5,6 +5,7 @@ export interface ISocialMedia extends Document {
   platform: string;
   link: string;
   convertName?: string;
+  order: number;
 }
 
 const SocialMediaSchema: Schema = new Schema({
@@ -12,6 +13,7 @@ const SocialMediaSchema: Schema = new Schema({
   platform: { type: String, required: true },
   link: { type: String, required: true },
   convertName: { type: String },
+  order: { type: Number, unique: true },
 });
 
 export default mongoose.model<ISocialMedia>("SocialMedia", SocialMediaSchema);

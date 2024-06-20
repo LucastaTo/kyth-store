@@ -22,7 +22,11 @@ const variables_1 = require("../uilts/variables");
 const http_code_1 = require("../uilts/http-code");
 const helper_1 = require("../uilts/helper");
 const renderAdminPage = (_, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let socialMedias = yield SocialMedia_1.default.find();
+    let socialMedias = yield SocialMedia_1.default.find()
+        .sort({
+        order: 1,
+    })
+        .exec();
     if (socialMedias.length === 0) {
         socialMedias = variables_1.Variables.DATA_DEFAULT;
     }
@@ -70,9 +74,7 @@ const loginAuthor = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     if (!password)
         errors = Object.assign(Object.assign({}, errors), { password: message_1.Messages.INVALID_PASSWORD });
     if (Object.keys(errors).length > 0) {
-        return res
-            .status(http_code_1.HttpCode.NOT_FOUND)
-            .render("authentication/login", {
+        return res.status(http_code_1.HttpCode.NOT_FOUND).render("authentication/login", {
             errorValidator: errors,
             data: req.body,
         });
@@ -94,9 +96,7 @@ const loginAuthor = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (user && (yield bcryptjs_1.default.compare(password, user.password))) {
             if (!user.isActive) {
                 Logging_1.default.error(message_1.Messages.LOGIN_FAIL);
-                res
-                    .status(http_code_1.HttpCode.BAD_REQUEST)
-                    .render("authentication/login", {
+                res.status(http_code_1.HttpCode.BAD_REQUEST).render("authentication/login", {
                     message: message_1.Messages.USER_IS_BLOCKED,
                     data: req.body,
                 });
@@ -112,9 +112,7 @@ const loginAuthor = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         else {
             Logging_1.default.error(message_1.Messages.LOGIN_FAIL);
-            res
-                .status(http_code_1.HttpCode.BAD_REQUEST)
-                .render("authentication/login", {
+            res.status(http_code_1.HttpCode.BAD_REQUEST).render("authentication/login", {
                 message: message_1.Messages.INVALID_CREDENTIAL,
                 data: req.body,
             });

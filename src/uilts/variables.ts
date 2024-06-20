@@ -21,17 +21,39 @@ export class Variables {
       appName: Variables.APPNAME,
       platform: "instagram",
       link: "https://www.instagram.com/kyth.studio.vn",
+      order: 2,
     },
     {
       appName: Variables.APPNAME,
       platform: "tiktok",
       link: "https://www.tiktok.com/@kyth12.6",
+      order: 1,
     },
     {
       appName: Variables.APPNAME,
       platform: "facebook",
       link: "https://www.facebook.com/profile.php?id=100086505662624&mibextid=LQQJ4d",
       convertName: "KYTH Studio",
+      order: 3,
+    },
+    {
+      appName: process.env.APP_NAME_SECOND,
+      platform: "instagram",
+      link: "https://www.instagram.com/kyth.studio.vn",
+      order: 1,
+    },
+    {
+      appName: process.env.APP_NAME_SECOND,
+      platform: "tiktok",
+      link: "https://www.tiktok.com/@kyth12.6",
+      order: 2,
+    },
+    {
+      appName: process.env.APP_NAME_SECOND,
+      platform: "facebook",
+      link: "https://www.facebook.com/profile.php?id=100086505662624&mibextid=LQQJ4d",
+      convertName: "KYTH Studio",
+      order: 3,
     },
   ];
 }

@@ -10,15 +10,73 @@
         <div class="row between-element">
           <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
-              <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
-              <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+              <% data.forEach((app, index) => { %>
+                <% const appId = `nav-${app.appName.toLowerCase().split(" ").join("-")}-tab`; %>
+                <button class="nav-link <%= index === 0 ? 'active' : '' %>" id="<%= appId %>"
+                  data-bs-toggle="tab" data-bs-target="#nav-<%= app.appName.toLowerCase().split(" ").join("-") %>"
+                  type="button" role="tab" aria-controls="nav-<%= app.appName.toLowerCase().split(" ").join("-") %>"
+                  aria-selected="<%= index === 0 ? 'true' : 'false' %>">
+                  <%= app.appName %>
+                </button>
+              <% }); %>
             </div>
           </nav>
-          <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...</div>
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+          <div class="tab-content px-5 pt-3" id="nav-tabContent">
+            <% function getIcon(platform) { 
+              switch(platform) {
+                  case "instagram": %> 
+                      <i class="bx bxl-instagram d-block display-6 text-danger"></i>
+                      <% return;
+                  case "facebook": %> 
+                      <i class="bx bxl-facebook-square d-block display-6 text-primary"></i>
+                      <% return;
+                  case "tiktok": %> 
+                      <i class="cuz-tiktok d-block display-6"></i>
+                      <% return;
+                  case "zalo": %> 
+                      <i class="cuz-zalo d-block display-6"></i>
+                      <% return;
+                  default: %> 
+                      <i class="bx bx-bell-plus d-block display-6"></i>
+                      <% return;
+              }} %> 
+            <% data.forEach((app, index) => { %>
+              <% const tabId = `nav-${app.appName.toLowerCase().split(" ").join("-")}`; %>
+              <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" id="<%= tabId %>"
+                role="tabpanel" aria-labelledby="nav-<%= app.appName.toLowerCase().split(" ").join("-") %>-tab">
+                <table class="table table-hover" id="myTable">
+                  <thead>
+                  <tr>
+                    <th scope="col">Platform</th>
+                    <th scope="col">Link</th>
+                    <th scope="col">Name</th>
+                    <th scope="col"></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% app.informations.forEach(info => { %>
+                      <tr data-info-id="<%= info.id %>">
+                        <td><%= getIcon(info.platform) %></td>
+                        <% info.links.forEach(link => { %>
+                          <% if (typeof link === 'object') { %>
+                            <td class="mt-2"><a href="<%= link.link %>"><%= link.link %></a></td>
+                            <td class="mt-2"><strong class="m-0"><%= link.convertName %></strong></td>
+                          <% } else { %>
+                            <td><a href="<%= link %>"><%= link %></a></td>
+                            <td class="mt-2"></td>
+                          <% } %>
+                        <% }); %>
+                        <td>
+                          <span class="wrap-actions">
+                            Btton
+                          </span>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            <% }); %>
           </div>
         </div>
     </div>

@@ -7,8 +7,13 @@
     }
 }
 
-.between-element {
-    place-content: space-between;
+.tab-content .tab-pane table tbody td {
+    cursor: pointer;
+}
+.social-media {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
 }
 
 .custom-hr {

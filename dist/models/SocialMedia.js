@@ -29,6 +29,7 @@ const SocialMediaSchema = new mongoose_1.Schema({
     platform: { type: String, required: true },
     link: { type: String, required: true },
     convertName: { type: String },
+    order: { type: Number, unique: true },
 });
 exports.default = mongoose_1.default.model("SocialMedia", SocialMediaSchema);
 //# sourceMappingURL=SocialMedia.js.map

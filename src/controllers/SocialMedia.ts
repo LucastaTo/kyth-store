@@ -13,7 +13,11 @@ const renderOverviewPage = async (
   try {
     let socialMedias: ISocialMedia[] | null = await SocialMedia.find({
       platform: APP_NAME,
-    });
+    })
+      .sort({
+        order: 1,
+      })
+      .exec();
 
     if (socialMedias?.length === 0) {
       socialMedias = Variables.DATA_DEFAULT as ISocialMedia[];

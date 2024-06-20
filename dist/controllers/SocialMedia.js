@@ -22,7 +22,11 @@ const renderOverviewPage = (req, res) => __awaiter(void 0, void 0, void 0, funct
     try {
         let socialMedias = yield SocialMedia_1.default.find({
             platform: APP_NAME,
-        });
+        })
+            .sort({
+            order: 1,
+        })
+            .exec();
         if ((socialMedias === null || socialMedias === void 0 ? void 0 : socialMedias.length) === 0) {
             socialMedias = variables_1.Variables.DATA_DEFAULT;
         }
