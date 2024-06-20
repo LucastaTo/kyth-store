@@ -9,10 +9,9 @@ const renderOverviewPage = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { APP_NAME } = process.env;
   try {
     let socialMedias: ISocialMedia[] | null = await SocialMedia.find({
-      platform: APP_NAME,
+      platform: Variables.APPNAME,
     })
       .sort({
         order: 1,
@@ -23,7 +22,10 @@ const renderOverviewPage = async (
       socialMedias = Variables.DATA_DEFAULT as ISocialMedia[];
     }
 
-    const data = DataTransformerHelper.transformDataByPlatform(socialMedias);
+    const data = DataTransformerHelper.transformDataByPlatform(
+      socialMedias.filter((i) => i.appName === Variables.APPNAME)
+    );
+
     res.render("overview/index", { data });
   } catch (error: any) {
     Logging.error(error);

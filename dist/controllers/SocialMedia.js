@@ -18,10 +18,9 @@ const http_code_1 = require("../uilts/http-code");
 const helper_1 = require("../uilts/helper");
 const variables_1 = require("../uilts/variables");
 const renderOverviewPage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { APP_NAME } = process.env;
     try {
         let socialMedias = yield SocialMedia_1.default.find({
-            platform: APP_NAME,
+            platform: variables_1.Variables.APPNAME,
         })
             .sort({
             order: 1,
@@ -30,7 +29,7 @@ const renderOverviewPage = (req, res) => __awaiter(void 0, void 0, void 0, funct
         if ((socialMedias === null || socialMedias === void 0 ? void 0 : socialMedias.length) === 0) {
             socialMedias = variables_1.Variables.DATA_DEFAULT;
         }
-        const data = helper_1.DataTransformerHelper.transformDataByPlatform(socialMedias);
+        const data = helper_1.DataTransformerHelper.transformDataByPlatform(socialMedias.filter((i) => i.appName === variables_1.Variables.APPNAME));
         res.render("overview/index", { data });
     }
     catch (error) {
