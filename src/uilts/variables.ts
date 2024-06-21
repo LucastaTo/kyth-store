@@ -55,5 +55,5 @@ export class Variables {
       convertName: "KYTH Studio",
       order: 3,
     },
-  ];
+  ].sort((a, b) => a.order - b.order);
 }

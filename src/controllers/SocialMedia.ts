@@ -49,18 +49,21 @@ const createSocialMedia = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { APP_NAME } = process.env;
-
-  if (!APP_NAME) {
-    res
-      .status(500)
-      .json({ message: "Environment variable APP_NAME is not set" });
-    return;
-  }
-  const { platform, link } = req.body;
+  const { platform, link, appName, convertName = "" } = req.body;
 
   try {
-    const newSocialMedia: ISocialMedia = new SocialMedia({ platform, link });
+    const lastSocialMedia = await SocialMedia.findOne({ appName }).sort({
+      order: -1,
+    });
+    const nextOrder = lastSocialMedia ? lastSocialMedia.order + 1 : 1;
+
+    const newSocialMedia: ISocialMedia = new SocialMedia({
+      platform,
+      link,
+      appName,
+      convertName,
+      order: nextOrder,
+    });
     await newSocialMedia.save();
     res.status(201).json(newSocialMedia);
   } catch (error) {

@@ -47,16 +47,19 @@ const getAllSocialMedia = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 const createSocialMedia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { APP_NAME } = process.env;
-    if (!APP_NAME) {
-        res
-            .status(500)
-            .json({ message: "Environment variable APP_NAME is not set" });
-        return;
-    }
-    const { platform, link } = req.body;
+    const { platform, link, appName, convertName = "" } = req.body;
     try {
-        const newSocialMedia = new SocialMedia_1.default({ platform, link });
+        const lastSocialMedia = yield SocialMedia_1.default.findOne({ appName }).sort({
+            order: -1,
+        });
+        const nextOrder = lastSocialMedia ? lastSocialMedia.order + 1 : 1;
+        const newSocialMedia = new SocialMedia_1.default({
+            platform,
+            link,
+            appName,
+            convertName,
+            order: nextOrder,
+        });
         yield newSocialMedia.save();
         res.status(201).json(newSocialMedia);
     }

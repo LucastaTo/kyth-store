@@ -1,12 +1,18 @@
 <div class="page-content">
     <div class="container-fluid">
-        <div class="row align-items-center">
-            <div class="col-md-6">
+        <div class="row align-items-center mx-4">
+            <div class="col-md-9">
                 <div class="mb-3">
                     <h5 class="card-title">通話明細</h5>
                 </div>
             </div>
-        </div>
+            <div class="col-md-3">
+              <div class="btn-wrapper d-flex gap-3 justify-content-end">
+                <button class="btn-create">Create</button>
+                <button class="btn-save">Save</button>
+              </div>
+            </div>
+          </div>
         <div class="row between-element">
           <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -53,9 +59,9 @@
                     <th scope="col"></th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="sortable-table-body">
                     <% app.informations.forEach(info => { %>
-                      <tr data-info-id="<%= info.id %>">
+                      <tr data-info-id="<%= info._id %>">
                         <td><%= getIcon(info.platform) %></td>
                         <% info.links.forEach(link => { %>
                           <% if (typeof link === 'object') { %>

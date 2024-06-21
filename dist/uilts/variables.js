@@ -57,5 +57,5 @@ Variables.DATA_DEFAULT = [
         convertName: "KYTH Studio",
         order: 3,
     },
-];
+].sort((a, b) => a.order - b.order);
 //# sourceMappingURL=variables.js.map
